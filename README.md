@@ -9,7 +9,7 @@ users to login and order simultaneously from the same table)
 - Generate bill total
 - Pay bill
 
-### Owner
+### Restaurant Owner
 This would also support the following for restaurant owners
 - Ability to add items and categorize them along with descriptions
 - Ability to add/remove tables to the restaurant
@@ -17,3 +17,8 @@ This would also support the following for restaurant owners
 - View the orders received/added from each table
 - Manage the orders - add/remove items from each order
 - Generate bill total
+
+### Admin
+This would allow admins to 
+- Create/Delete the restaurant
+- Activities listed above

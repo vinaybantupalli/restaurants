@@ -3,16 +3,22 @@
 
 #### Scope:
 - Only Backend REST APIs
-  - Customer side
+  - Customer API
     - View Items
     - Add/View Order
     - View Bill
-  - Owner side
+  - Owner API
     - Add/Remove Items
     - Add/View/Edit/Remove Order
     - Add/Remove Table
     - View Bill
+  - Admin API
+    - Add/Edit/Remove Restaurants
 - Session for a table will be maintained through JWT and table OTP
+- All APIs need to be access managed 
+  - admin can access all
+  - restaurant owners can access their own restaurant
+  - customer can only access their table
 
 
 #### Out of Scope
