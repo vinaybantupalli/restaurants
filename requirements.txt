@@ -1,0 +1,5 @@
+Flask-JWT-Extended
+Flask-Smorest
+passlib
+marshmallow
+python-dotenv
