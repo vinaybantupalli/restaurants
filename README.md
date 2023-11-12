@@ -27,7 +27,22 @@ This would allow admins to
 
 ## How to run
 
-To run locally, use the following commands to build and run the docker image
+**Note:** Look at `docker-local.sh` for commands on how to connect mongo and app docker image locally
+
+Use the following commands to start a mongodb container on local port 27017
+
+```Shell
+# pull and run the mongo docker 
+docker pull mongo:5.0.22
+docker run -dp 27017:27017 --name mongo_local mongo:5.0.22
+
+# login to mongo shell 
+docker exec -it mongo_local mongo
+# Create the DB using the following commands on mongo shell
+use restaurants
+```
+
+To run the application locally, use the following commands to build and run the docker image
 
 ```Shell
 # Build docker image with tag 'restaurants' 

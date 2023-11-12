@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from flask_smorest import Api
+from mongoengine import connect
+
 from resources.restaurant import blp as RestaurantBlueprint
 
 from blocklist import BLOCKLIST
@@ -19,7 +21,13 @@ def create_app(db_url=None):
     app.config["OPENAPI_SWAGGER_UI_PATH"] = "/swagger-ui"
     app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
     app.config["PROPAGATE_EXCEPTIONS"] = True
-    # db.init_app(app)
+    app.config['MONGODB_SETTINGS'] = {
+        'db': 'restaurants',
+        'host': 'mongodb://mongo_local:27017/restaurants',
+    }
+
+    connect(host=app.config['MONGODB_SETTINGS']['host'])
+
     api = Api(app)
     logging.basicConfig(level=logging.DEBUG)
 
@@ -64,5 +72,5 @@ def create_app(db_url=None):
     return app
 
 
-# if __name__ == "__main__":
-#     create_app().run()
+if __name__ == "__main__":
+    create_app().run()

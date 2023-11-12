@@ -4,3 +4,4 @@ passlib
 marshmallow
 python-dotenv
 gunicorn
+mongoengine
