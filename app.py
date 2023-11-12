@@ -33,13 +33,6 @@ def create_app(db_url=None):
     # TODO: use repeatable key from config
     jwt = JWTManager(app)
 
-    # @jwt.additional_claims_loader
-    # def add_claims_to_jwt(identity):
-    #     # TODO: Read from a config file instead of hard-coding
-    #     if identity == 1:
-    #         return {"is_admin": True}
-    #     return {"is_admin": False}
-
     @jwt.token_in_blocklist_loader
     def check_if_token_in_blocklist(jwt_header, jwt_payload):
         return jwt_payload["jti"] in BLOCKLIST
