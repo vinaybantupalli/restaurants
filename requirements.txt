@@ -3,3 +3,4 @@ Flask-Smorest
 passlib
 marshmallow
 python-dotenv
+gunicorn

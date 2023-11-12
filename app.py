@@ -1,3 +1,5 @@
+import logging
+
 from dotenv import load_dotenv
 from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
@@ -19,6 +21,7 @@ def create_app(db_url=None):
     app.config["PROPAGATE_EXCEPTIONS"] = True
     # db.init_app(app)
     api = Api(app)
+    logging.basicConfig(level=logging.DEBUG)
 
     app.config["JWT_SECRET_KEY"] = "jose"
     jwt = JWTManager(app)
@@ -61,5 +64,5 @@ def create_app(db_url=None):
     return app
 
 
-if __name__ == "__main__":
-    create_app().run()
+# if __name__ == "__main__":
+#     create_app().run()

@@ -1,5 +1,7 @@
 # Restaurants
 
+## Functional Requirements
+
 ### Customer
 A service which allows customers to
 - View menu after scanning barcode at the table
@@ -22,3 +24,15 @@ This would also support the following for restaurant owners
 This would allow admins to 
 - Create/Delete the restaurant
 - Activities listed above
+
+## How to run
+
+To run locally, use the following commands to build and run the docker image
+
+```Shell
+# Build docker image with tag 'restaurants' 
+# The platform flag used is for apple silicon chips. Remove it or use appropriate for other machines
+docker build --platform linux/arm64/v8 -f Dockerfile -t restaurants .
+# Run the image with auto reloading code on the container and debug mode on 
+docker run -dp 8080:80 -w /app -v "$(pwd):/app" restaurants
+```
