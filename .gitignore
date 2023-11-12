@@ -23,5 +23,7 @@
 hs_err_pid*
 replay_pid*
 
+*__pycache__
+
 # .idea
 .idea
