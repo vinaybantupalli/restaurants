@@ -1,5 +1,7 @@
 from marshmallow import Schema, fields
 
+from models.user_type import UserType
+
 
 class PlainItemSchema(Schema):
     id = fields.Int(dump_only=True)
@@ -24,3 +26,22 @@ class ItemUpdateSchema(Schema):
 
 class RestaurantSchema(PlainRestaurantSchema):
     items = fields.List(fields.Nested(PlainItemSchema()), dump_only=True)
+
+
+class UserSchema(Schema):
+    username = fields.Str(required=True)
+    password = fields.Str(required=True, load_only=True)
+    user_type = fields.Enum(UserType, required=True, dump_only=True)
+
+
+class OwnerSchema(UserSchema):
+    restaurant_id = fields.Int(required=True)
+
+
+class TableSchema(Schema):
+    restaurant_id = fields.Int(required=True)
+    table_id = fields.Int(required=True)
+
+
+class TableOtpSchema(Schema):
+    otp = fields.Int(required=True)
