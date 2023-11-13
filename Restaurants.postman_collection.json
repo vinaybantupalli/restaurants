@@ -13,7 +13,45 @@
 					"name": "Get all restaurants",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/restaurant",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurant"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create restaurant",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"Killa's Taproom\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{baseUrl}}/restaurant",
 							"host": [
@@ -30,7 +68,13 @@
 					"name": "Get restaurant",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{baseUrl}}/restaurant/:restaurantId",
 							"host": [
@@ -51,10 +95,158 @@
 					"response": []
 				},
 				{
-					"name": "Create restaurant",
+					"name": "Delete restaurant",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/restaurant/:restaurantId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantId"
+							],
+							"variable": [
+								{
+									"key": "restaurantId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Table",
+			"item": [
+				{
+					"name": "Get all tables",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/restaurant/:restaurantId/table",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantId",
+								"table"
+							],
+							"variable": [
+								{
+									"key": "restaurantId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create table",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"table_id\" : 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/restaurant/:restaurantId/table",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantId",
+								"table"
+							],
+							"variable": [
+								{
+									"key": "restaurantId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get table",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/restaurant/:restaurantId/table/:tableId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantId",
+								"table",
+								":tableId"
+							],
+							"variable": [
+								{
+									"key": "restaurantId",
+									"value": "1"
+								},
+								{
+									"key": "tableId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete table",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"name\" : \"Killa's Taproom\"\n}",
@@ -65,12 +257,25 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/restaurant",
+							"raw": "{{baseUrl}}/restaurant/:restaurantId/table/:tableId",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"restaurant"
+								"restaurant",
+								":restaurantId",
+								"table",
+								":tableId"
+							],
+							"variable": [
+								{
+									"key": "restaurantId",
+									"value": "1"
+								},
+								{
+									"key": "tableId",
+									"value": "1"
+								}
 							]
 						}
 					},
@@ -152,12 +357,12 @@
 					"response": []
 				},
 				{
-					"name": "Create Table",
+					"name": "Get Owner",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
+						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
@@ -165,35 +370,6 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"restaurant_id\": 1,\n    \"table_id\": 2\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/table",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"table"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create Table OTP",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"username\": \"vinay\",\n    \"password\": \"password\"\n}",
@@ -204,25 +380,57 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/otp/restaurant/:restaurantId/table/:tableId",
+							"raw": "{{baseUrl}}/owner/:username",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"otp",
-								"restaurant",
-								":restaurantId",
-								"table",
-								":tableId"
+								"owner",
+								":username"
 							],
 							"variable": [
 								{
-									"key": "restaurantId",
-									"value": "1"
-								},
+									"key": "username",
+									"value": "1:1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Owner",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"vinay\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/owner/:username",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"owner",
+								":username"
+							],
+							"variable": [
 								{
-									"key": "tableId",
-									"value": "2"
+									"key": "username",
+									"value": "vinayT"
 								}
 							]
 						}
@@ -274,7 +482,50 @@
 								},
 								{
 									"key": "tableId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Table OTP",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"vinay\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/otp/restaurant/:restaurantId/table/:tableId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"otp",
+								"restaurant",
+								":restaurantId",
+								"table",
+								":tableId"
+							],
+							"variable": [
+								{
+									"key": "restaurantId",
 									"value": "1"
+								},
+								{
+									"key": "tableId",
+									"value": "2"
 								}
 							]
 						}
@@ -304,7 +555,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"vinayT\",\n    \"password\": \"pass\"\n}",
+							"raw": "{\n    \"username\": \"1:2\",\n    \"password\": \"957409\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -396,87 +647,6 @@
 							],
 							"path": [
 								"refresh"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get User",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"username\": \"vinay\",\n    \"password\": \"password\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/user/:username",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"user",
-								":username"
-							],
-							"variable": [
-								{
-									"key": "username",
-									"value": "1:1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete User",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"username\": \"vinay\",\n    \"password\": \"password\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/user/:username",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"user",
-								":username"
-							],
-							"variable": [
-								{
-									"key": "username",
-									"value": "1:2"
-								}
 							]
 						}
 					},

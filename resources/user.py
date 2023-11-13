@@ -60,6 +60,7 @@ class OwnerOps(MethodView):
 @blp.route("/owner/<string:username>")
 class OwnerUtils(MethodView):
     # used for testing for now
+    @jwt_required()
     @blp.response(200, OwnerSchema)
     def get(self, username):
         curr_user = User.objects(username=get_jwt_identity()).first()
@@ -74,6 +75,7 @@ class OwnerUtils(MethodView):
 
         return user
 
+    @jwt_required(fresh=True)
     @blp.response(200, None)
     def delete(self, username):
         curr_user = User.objects(username=get_jwt_identity()).first()

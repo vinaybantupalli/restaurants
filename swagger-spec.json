@@ -1,96 +1,5 @@
 {
   "paths": {
-    "/restaurant/{restaurant_id}": {
-      "get": {
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PlainRestaurant"
-                }
-              }
-            }
-          },
-          "default": {
-            "$ref": "#/components/responses/DEFAULT_ERROR"
-          }
-        },
-        "tags": [
-          "Restaurants"
-        ]
-      },
-      "parameters": [
-        {
-          "in": "path",
-          "name": "restaurant_id",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "minLength": 1
-          }
-        }
-      ]
-    },
-    "/restaurant": {
-      "get": {
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PlainRestaurant"
-                  }
-                }
-              }
-            }
-          },
-          "default": {
-            "$ref": "#/components/responses/DEFAULT_ERROR"
-          }
-        },
-        "tags": [
-          "Restaurants"
-        ]
-      },
-      "post": {
-        "responses": {
-          "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
-          },
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PlainRestaurant"
-                }
-              }
-            }
-          },
-          "default": {
-            "$ref": "#/components/responses/DEFAULT_ERROR"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Restaurant"
-              }
-            }
-          }
-        },
-        "tags": [
-          "Restaurants"
-        ]
-      }
-    },
     "/admin": {
       "post": {
         "responses": {
@@ -102,6 +11,7 @@
           }
         },
         "requestBody": {
+          "description": "Create Admin User",
           "required": true,
           "content": {
             "application/json": {
@@ -141,30 +51,51 @@
         ]
       }
     },
-    "/table": {
-      "post": {
+    "/owner/{username}": {
+      "get": {
         "responses": {
-          "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Owner"
+                }
+              }
+            }
           },
           "default": {
             "$ref": "#/components/responses/DEFAULT_ERROR"
           }
         },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Table"
-              }
-            }
+        "tags": [
+          "Users"
+        ]
+      },
+      "delete": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
           }
         },
         "tags": [
           "Users"
         ]
-      }
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "username",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
     },
     "/otp/restaurant/{restaurant_id}/table/{table_id}": {
       "get": {
@@ -189,6 +120,9 @@
       },
       "post": {
         "responses": {
+          "200": {
+            "description": "OK"
+          },
           "default": {
             "$ref": "#/components/responses/DEFAULT_ERROR"
           }
@@ -255,7 +189,19 @@
         ]
       }
     },
-    "/user/{username}": {
+    "/refresh": {
+      "post": {
+        "responses": {
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/restaurant": {
       "get": {
         "responses": {
           "200": {
@@ -263,7 +209,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/User"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PlainRestaurant"
+                  }
                 }
               }
             }
@@ -273,7 +222,62 @@
           }
         },
         "tags": [
-          "Users"
+          "Restaurants"
+        ]
+      },
+      "post": {
+        "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlainRestaurant"
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Restaurant"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Restaurants"
+        ]
+      }
+    },
+    "/restaurant/{restaurant_id}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlainRestaurant"
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "tags": [
+          "Restaurants"
         ]
       },
       "delete": {
@@ -286,32 +290,134 @@
           }
         },
         "tags": [
-          "Users"
+          "Restaurants"
         ]
       },
       "parameters": [
         {
           "in": "path",
-          "name": "username",
+          "name": "restaurant_id",
           "required": true,
           "schema": {
-            "type": "string",
-            "minLength": 1
+            "type": "integer",
+            "minimum": 0
           }
         }
       ]
     },
-    "/refresh": {
-      "post": {
+    "/restaurant/{restaurant_id}/table": {
+      "get": {
         "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Table"
+                  }
+                }
+              }
+            }
+          },
           "default": {
             "$ref": "#/components/responses/DEFAULT_ERROR"
           }
         },
         "tags": [
-          "Users"
+          "Tables"
         ]
-      }
+      },
+      "post": {
+        "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_ENTITY"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlainTable"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Tables"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "restaurant_id",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      ]
+    },
+    "/restaurant/{restaurant_id}/table/{table_id}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Table"
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "tags": [
+          "Tables"
+        ]
+      },
+      "delete": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "tags": [
+          "Tables"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "restaurant_id",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        {
+          "in": "path",
+          "name": "table_id",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      ]
     }
   },
   "info": {
@@ -320,12 +426,16 @@
   },
   "tags": [
     {
+      "name": "Users",
+      "description": "Operations on users"
+    },
+    {
       "name": "Restaurants",
       "description": "Operations on restaurants"
     },
     {
-      "name": "Users",
-      "description": "Operations on users"
+      "name": "Tables",
+      "description": "Operations on tables"
     }
   ],
   "openapi": "3.0.3",
@@ -375,56 +485,6 @@
           },
           "next_page": {
             "type": "integer"
-          }
-        }
-      },
-      "PlainRestaurant": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "readOnly": true
-          },
-          "name": {
-            "type": "string"
-          }
-        }
-      },
-      "PlainItem": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "readOnly": true
-          },
-          "name": {
-            "type": "string"
-          },
-          "price": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "name",
-          "price"
-        ]
-      },
-      "Restaurant": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "readOnly": true
-          },
-          "name": {
-            "type": "string"
-          },
-          "items": {
-            "type": "array",
-            "readOnly": true,
-            "items": {
-              "$ref": "#/components/schemas/PlainItem"
-            }
           }
         }
       },
@@ -484,21 +544,6 @@
           "username"
         ]
       },
-      "Table": {
-        "type": "object",
-        "properties": {
-          "restaurant_id": {
-            "type": "integer"
-          },
-          "table_id": {
-            "type": "integer"
-          }
-        },
-        "required": [
-          "restaurant_id",
-          "table_id"
-        ]
-      },
       "TableOtp": {
         "type": "object",
         "properties": {
@@ -509,11 +554,87 @@
         "required": [
           "otp"
         ]
+      },
+      "PlainRestaurant": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "PlainItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "name",
+          "price"
+        ]
+      },
+      "Restaurant": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "readOnly": true,
+            "items": {
+              "$ref": "#/components/schemas/PlainItem"
+            }
+          }
+        }
+      },
+      "Table": {
+        "type": "object",
+        "properties": {
+          "table_id": {
+            "type": "integer"
+          },
+          "restaurant_id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "restaurant_id",
+          "table_id"
+        ]
+      },
+      "PlainTable": {
+        "type": "object",
+        "properties": {
+          "table_id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "table_id"
+        ]
       }
     },
     "responses": {
-      "DEFAULT_ERROR": {
-        "description": "Default error response",
+      "UNPROCESSABLE_ENTITY": {
+        "description": "Unprocessable Entity",
         "content": {
           "application/json": {
             "schema": {
@@ -522,8 +643,8 @@
           }
         }
       },
-      "UNPROCESSABLE_ENTITY": {
-        "description": "Unprocessable Entity",
+      "DEFAULT_ERROR": {
+        "description": "Default error response",
         "content": {
           "application/json": {
             "schema": {
