@@ -81,6 +81,28 @@ class CreateTable(MethodView):
 
         return {"message": "Table created successfully."}, 201
 
+    @blp.arguments(TableSchema)
+    @jwt_required()
+    def get(self, user_data):
+        curr_user = User.objects(username=get_jwt_identity()).first()
+
+        # user either needs to be admin or owner of the restaurant
+        if not curr_user.is_admin_or_curr_owner(user_data):
+            abort(403, message="Current user doesn't have access to either create tables at all or on this restaurant.")
+
+        restaurant_id = user_data["restaurant_id"]
+        table_id = user_data["table_id"]
+        username = get_table_key(restaurant_id, table_id)
+
+        if User.objects(username=username).first():
+            abort(409, message="A table with that id already exists.")
+
+        user = User(username=username, password="1", user_type=UserType.TABLE, restaurant_id=restaurant_id,
+                    table_id=table_id)
+        user.save()
+
+        return {"message": "Table created successfully."}, 201
+
 
 @blp.route("/otp/restaurant/<int:restaurant_id>/table/<int:table_id>")
 class TableOtp(MethodView):
@@ -91,16 +113,17 @@ class TableOtp(MethodView):
             abort(400, message="Session for table already exists.")
 
         table.update(set__password=str(random.randint(100000, 999999)))
-        return {"message": "Otp Generated. Contact Restaurant Staff"}, 200
+        return {"message": "Otp Generated. Please contact Restaurant Staff"}, 200
 
     @jwt_required()
     @blp.response(200, TableOtpSchema)
     def get(self, restaurant_id, table_id):
         curr_user = User.objects(username=get_jwt_identity()).first()
-        table = User.objects(restaurant_id=restaurant_id, table_id=table_id).first()
 
         if not curr_user.is_admin_or_curr_owner({"restaurant_id": restaurant_id}):
             abort(403, message="Current user doesn't have access to view otp.")
+
+        table = User.objects(restaurant_id=restaurant_id, table_id=table_id).first()
 
         return {"otp": int(table.password)}
 

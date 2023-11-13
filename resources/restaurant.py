@@ -19,8 +19,10 @@ class RestaurantAPI(MethodView):
     @blp.response(200, PlainRestaurantSchema)
     def get(self, restaurant_id):
         curr_user = User.objects(username=get_jwt_identity()).first()
+
         if not curr_user.is_admin_or_curr_owner({"restaurant_id": restaurant_id}):
             abort(403, message="Current user doesn't have access to do get on this restaurant.")
+
         restaurant = Restaurant.objects(id=restaurant_id).first()
         logger.debug(f"log {restaurant.__repr__()}")
         return restaurant
@@ -32,15 +34,18 @@ class RestaurantList(MethodView):
     @blp.response(200, PlainRestaurantSchema(many=True))
     def get(self):
         curr_user = User.objects(username=get_jwt_identity()).first()
+
         if curr_user.user_type != UserType.ADMIN:
             abort(403, message="Current user doesn't have access to get restaurants")
 
         return Restaurant.objects()
 
+    @jwt_required(fresh=True)
     @blp.arguments(RestaurantSchema)
     @blp.response(201, PlainRestaurantSchema)
     def post(self, restaurant_data):
         curr_user = User.objects(username=get_jwt_identity()).first()
+
         if curr_user.user_type != UserType.ADMIN:
             abort(403, message="Current user doesn't have access to create restaurants")
 
