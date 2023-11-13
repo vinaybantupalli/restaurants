@@ -2,26 +2,18 @@ import logging
 import random
 
 from flask.views import MethodView
-from flask_smorest import Blueprint, abort
 from flask_jwt_extended import (create_access_token, create_refresh_token, get_jwt_identity, get_jwt, jwt_required, )
+from flask_smorest import Blueprint, abort
 from passlib.hash import pbkdf2_sha256
 
+from blocklist import BLOCKLIST
 from models import User
 from models.user_type import UserType
+from resources.utils import get_table_key
 from schemas import UserSchema, OwnerSchema, TableSchema, TableOtpSchema
-from blocklist import BLOCKLIST
 
 blp = Blueprint("Users", "users", description="Operations on users")
 logger = logging.getLogger(__name__)
-
-
-def is_admin_or_restaurant_owner(user, user_data):
-    return (user.user_type == UserType.ADMIN or (
-            user.user_type == UserType.OWNER and user.restaurant_id == user_data["restaurant_id"]))
-
-
-def get_table_key(restaurant_id, table_id):
-    return str(restaurant_id) + ":" + str(table_id)
 
 
 @blp.route("/admin")
@@ -30,9 +22,9 @@ class CreateAdmin(MethodView):
     @blp.arguments(UserSchema)
     @jwt_required(fresh=True)
     def post(self, user_data):
-        current_user = User.objects(username=get_jwt_identity()).first()
+        curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if current_user.user_type != UserType.ADMIN:
+        if curr_user.user_type != UserType.ADMIN:
             abort(403, message="Current user doesn't have access to create admin users")
 
         if User.objects(username=user_data["username"]).first():
@@ -50,9 +42,9 @@ class CreateOwner(MethodView):
     @blp.arguments(OwnerSchema)
     @jwt_required(fresh=True)
     def post(self, user_data):
-        current_user = User.objects(username=get_jwt_identity()).first()
+        curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if current_user.user_type != UserType.ADMIN:
+        if curr_user.user_type != UserType.ADMIN:
             abort(403, message="Current user doesn't have access to create owners")
 
         if User.objects(username=user_data["username"]).first():
@@ -73,7 +65,7 @@ class CreateTable(MethodView):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
         # user either needs to be admin or owner of the restaurant
-        if not is_admin_or_restaurant_owner(curr_user, user_data):
+        if not curr_user.is_admin_or_curr_owner(user_data):
             abort(403, message="Current user doesn't have access to either create tables at all or on this restaurant.")
 
         restaurant_id = user_data["restaurant_id"]
@@ -107,7 +99,7 @@ class TableOtp(MethodView):
         curr_user = User.objects(username=get_jwt_identity()).first()
         table = User.objects(restaurant_id=restaurant_id, table_id=table_id).first()
 
-        if not is_admin_or_restaurant_owner(curr_user, {"restaurant_id": restaurant_id}):
+        if not curr_user.is_admin_or_curr_owner({"restaurant_id": restaurant_id}):
             abort(403, message="Current user doesn't have access to view otp.")
 
         return {"otp": int(table.password)}
@@ -156,8 +148,8 @@ class UserAPI(MethodView):
 class TokenRefresh(MethodView):
     @jwt_required(refresh=True)
     def post(self):
-        current_user = get_jwt_identity()
-        new_token = create_access_token(identity=current_user, fresh=False)
+        curr_user = get_jwt_identity()
+        new_token = create_access_token(identity=curr_user, fresh=False)
         jti = get_jwt()["jti"]
         BLOCKLIST.add(jti)
         return {"access_token": new_token}, 200
