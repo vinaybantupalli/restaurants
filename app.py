@@ -8,6 +8,7 @@ from mongoengine import connect
 
 from resources.restaurant import blp as RestaurantBlueprint
 from resources.user import blp as UserBlueprint
+from resources.table import blp as TableBlueprint
 
 from blocklist import BLOCKLIST
 
@@ -59,8 +60,9 @@ def create_app(db_url=None):
     def revoked_token_callback(jwt_header, jwt_payload):
         return jsonify({"description": "The token has been revoked.", "error": "token_revoked"}), 401,
 
-    api.register_blueprint(RestaurantBlueprint)
     api.register_blueprint(UserBlueprint)
+    api.register_blueprint(RestaurantBlueprint)
+    api.register_blueprint(TableBlueprint)
 
     return app
 

@@ -38,9 +38,12 @@ class OwnerSchema(UserSchema):
     restaurant_id = fields.Int(required=True)
 
 
-class TableSchema(Schema):
-    restaurant_id = fields.Int(required=True)
+class PlainTableSchema(Schema):
     table_id = fields.Int(required=True)
+
+
+class TableSchema(PlainTableSchema):
+    restaurant_id = fields.Int(required=True)
 
 
 class TableOtpSchema(Schema):

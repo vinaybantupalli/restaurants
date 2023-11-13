@@ -10,22 +10,22 @@ from blocklist import BLOCKLIST
 from models import User
 from models.user_type import UserType
 from resources.utils import get_table_key
-from schemas import UserSchema, OwnerSchema, TableSchema, TableOtpSchema
+from schemas import UserSchema, OwnerSchema, TableOtpSchema
 
 blp = Blueprint("Users", "users", description="Operations on users")
 logger = logging.getLogger(__name__)
 
 
 @blp.route("/admin")
-class CreateAdmin(MethodView):
+class AdminOps(MethodView):
     # This endpoint is for internal use only
-    @blp.arguments(UserSchema)
+    @blp.arguments(UserSchema, description="Create Admin User")
     @jwt_required(fresh=True)
     def post(self, user_data):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if curr_user.user_type != UserType.ADMIN:
-            abort(403, message="Current user doesn't have access to create admin users")
+        if not curr_user.is_admin():
+            abort(403, message="Current user doesn't have access to create admin users.")
 
         if User.objects(username=user_data["username"]).first():
             abort(409, message="A user with that username already exists.")
@@ -38,14 +38,14 @@ class CreateAdmin(MethodView):
 
 
 @blp.route("/owner")
-class CreateOwner(MethodView):
+class OwnerOps(MethodView):
     @blp.arguments(OwnerSchema)
     @jwt_required(fresh=True)
     def post(self, user_data):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if curr_user.user_type != UserType.ADMIN:
-            abort(403, message="Current user doesn't have access to create owners")
+        if not curr_user.is_admin():
+            abort(403, message="Current user doesn't have access to create owners.")
 
         if User.objects(username=user_data["username"]).first():
             abort(409, message="A user with that username already exists.")
@@ -57,55 +57,38 @@ class CreateOwner(MethodView):
         return {"message": "User created successfully."}, 201
 
 
-@blp.route("/table")
-class CreateTable(MethodView):
-    @blp.arguments(TableSchema)
-    @jwt_required(fresh=True)
-    def post(self, user_data):
+@blp.route("/owner/<string:username>")
+class OwnerUtils(MethodView):
+    # used for testing for now
+    @blp.response(200, OwnerSchema)
+    def get(self, username):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
-        # user either needs to be admin or owner of the restaurant
-        if not curr_user.is_admin_or_curr_owner(user_data):
-            abort(403, message="Current user doesn't have access to either create tables at all or on this restaurant.")
+        if not curr_user.is_admin_or_curr_user(username=username):
+            abort(403, message="Current user doesn't have access to view owner.")
 
-        restaurant_id = user_data["restaurant_id"]
-        table_id = user_data["table_id"]
-        username = get_table_key(restaurant_id, table_id)
+        user = User.objects(username=username).first()
 
-        if User.objects(username=username).first():
-            abort(409, message="A table with that id already exists.")
+        if user.user_type != UserType.OWNER:
+            abort(400, message="Requested user is not owner.")
 
-        user = User(username=username, password="1", user_type=UserType.TABLE, restaurant_id=restaurant_id,
-                    table_id=table_id)
-        user.save()
+        return user
 
-        return {"message": "Table created successfully."}, 201
-
-    @blp.arguments(TableSchema)
-    @jwt_required()
-    def get(self, user_data):
+    @blp.response(200, None)
+    def delete(self, username):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
-        # user either needs to be admin or owner of the restaurant
-        if not curr_user.is_admin_or_curr_owner(user_data):
-            abort(403, message="Current user doesn't have access to either create tables at all or on this restaurant.")
+        if not curr_user.is_admin():
+            abort(403, message="Current user doesn't have access to delete owners.")
 
-        restaurant_id = user_data["restaurant_id"]
-        table_id = user_data["table_id"]
-        username = get_table_key(restaurant_id, table_id)
-
-        if User.objects(username=username).first():
-            abort(409, message="A table with that id already exists.")
-
-        user = User(username=username, password="1", user_type=UserType.TABLE, restaurant_id=restaurant_id,
-                    table_id=table_id)
-        user.save()
-
-        return {"message": "Table created successfully."}, 201
+        user = User.objects(username=username).first()
+        user.delete()
+        return {"message": "User Deleted Successfully"}, 200
 
 
 @blp.route("/otp/restaurant/<int:restaurant_id>/table/<int:table_id>")
-class TableOtp(MethodView):
+class TableOtpUtils(MethodView):
+    @blp.response(200)
     def post(self, restaurant_id, table_id):
         table = User.objects(username=get_table_key(restaurant_id, table_id)).first()
 
@@ -120,7 +103,7 @@ class TableOtp(MethodView):
     def get(self, restaurant_id, table_id):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if not curr_user.is_admin_or_curr_owner({"restaurant_id": restaurant_id}):
+        if not curr_user.is_admin_or_curr_owner(restaurant_id):
             abort(403, message="Current user doesn't have access to view otp.")
 
         table = User.objects(restaurant_id=restaurant_id, table_id=table_id).first()
@@ -149,22 +132,7 @@ class UserLogout(MethodView):
     def post(self):
         jti = get_jwt()["jti"]
         BLOCKLIST.add(jti)
-        return {"message": "Successfully logged out"}, 200
-
-
-@blp.route("/user/<string:username>")
-class UserAPI(MethodView):
-    # used for testing for now
-    @blp.response(200, UserSchema)
-    def get(self, username):
-        user = User.objects(username=username).first()
-        return user
-
-    @blp.response(200, None)
-    def delete(self, username):
-        user = User.objects(username=username).first()
-        user.delete()
-        return {"message": "User Deleted Successfully"}, 200
+        return {"message": "Successfully logged out."}, 200
 
 
 @blp.route("/refresh")

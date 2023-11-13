@@ -14,6 +14,11 @@ class User(Document):
     def __repr__(self):
         return f'<User(username={self.username}, user_type={self.user_type})>'
 
-    def is_admin_or_curr_owner(self, user_data):
-        return (self.user_type == UserType.ADMIN or (
-                self.user_type == UserType.OWNER and self.restaurant_id == user_data["restaurant_id"]))
+    def is_admin(self):
+        return self.user_type == UserType.ADMIN
+
+    def is_admin_or_curr_owner(self, restaurant_id):
+        return self.is_admin() or (self.user_type == UserType.OWNER and self.restaurant_id == restaurant_id)
+
+    def is_admin_or_curr_user(self, username):
+        return self.is_admin() or (self.user_type == UserType.OWNER and self.username == username)
