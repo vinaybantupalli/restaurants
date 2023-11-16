@@ -22,3 +22,8 @@
 - Verify whether multiple people are able to log in simultaneously from same table
 - Implement closing table session (when bill is generated)
 - How to handle adding items images (s3 and store image links?)
+- How to handle early bird offers and discounts? 
+- Extra handling for identifying who in the table ordered what
+  - Might be useful for splitting bill among themselves
+- Handle env variables properly (for local and prod versions)
+- Read about gunicorn and use it properly in docker
