@@ -5,27 +5,44 @@ from models.user_type import UserType
 
 class PlainItemSchema(Schema):
     id = fields.Int(dump_only=True)
-    name = fields.Str(required=True)
-    price = fields.Float(required=True)
+    name = fields.Str()
+    price = fields.Int()
+    description = fields.Str()
+    image = fields.Str()
+    tags = fields.List(fields.Str())
 
 
 class PlainRestaurantSchema(Schema):
     id = fields.Int(dump_only=True)
-    name = fields.Str()
-
-
-class ItemSchema(PlainItemSchema):
-    restaurant_id = fields.Int(required=True, load_only=True)
-    restaurant = fields.Nested(PlainRestaurantSchema(), dump_only=True)
-
-
-class ItemUpdateSchema(Schema):
-    name = fields.Str()
-    price = fields.Float()
+    name = fields.Str(required=True)
+    metadata = fields.Dict(required=False)
+    created_at = fields.DateTime(dump_only=True)
+    updated_at = fields.DateTime(dump_only=True)
 
 
 class RestaurantSchema(PlainRestaurantSchema):
-    items = fields.List(fields.Nested(PlainItemSchema()), dump_only=True)
+    items = fields.List(fields.Nested(PlainItemSchema()))
+    menu_layout = fields.Dict()
+
+
+class OrderItemSchema(Schema):
+    item_id = fields.Int(required=True)
+    batch_id = fields.Int(dump_only=True)
+    name = fields.Str(dump_only=True)
+    price = fields.Int(dump_only=True)
+    quantity = fields.Int()
+    instructions = fields.Str()
+    timestamp = fields.DateTime(dump_only=True)
+
+
+class PlainOrderSchema(Schema):
+    restaurant_id = fields.Int(required=True)
+    table_id = fields.List(fields.Int())
+    order_id = fields.Int(dump_only=True)
+
+
+class OrderSchema(PlainOrderSchema):
+    items = fields.List(fields.Nested(OrderItemSchema()))
 
 
 class UserSchema(Schema):
