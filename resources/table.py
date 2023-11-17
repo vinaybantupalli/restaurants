@@ -5,8 +5,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_smorest import Blueprint
 from flask_smorest import abort
 
-from models import User
-from models.user_type import UserType
+from models import User, UserType
 from resources.utils import get_table_key
 from schemas import TableSchema, PlainTableSchema
 

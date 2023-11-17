@@ -6,8 +6,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_smorest import Blueprint
 from flask_smorest import abort
 
-from models import Restaurant, User
-from models.item import Item
+from models import Restaurant, User, Item
 from schemas import PlainItemSchema, RestaurantSchema, PlainRestaurantSchema, RestaurantUpdateSchema
 
 blp = Blueprint("Restaurants", "restaurants", description="Operations on restaurants")
@@ -28,7 +27,6 @@ class RestaurantUtils(MethodView):
 
     @jwt_required(fresh=True)
     @blp.arguments(PlainRestaurantSchema)
-    @blp.response(201, RestaurantSchema)
     def post(self, restaurant_data):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
@@ -38,7 +36,7 @@ class RestaurantUtils(MethodView):
         restaurant = Restaurant(**restaurant_data)
         restaurant.updated_at = datetime.utcnow()
         restaurant.save()
-        return restaurant
+        return {"message": "Restaurant created successfully."}, 201
 
 
 @blp.route("/restaurant/<int:restaurant_id>")
@@ -98,7 +96,6 @@ class ItemUtils(MethodView):
 
     @jwt_required(fresh=True)
     @blp.arguments(PlainItemSchema)
-    @blp.response(201, PlainItemSchema)
     def post(self, item_data, restaurant_id):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
@@ -110,7 +107,7 @@ class ItemUtils(MethodView):
         restaurant.items.append(item)
         restaurant.updated_at = datetime.utcnow()
         restaurant.save()
-        return PlainItemSchema().dump(item), 201
+        return {"message": "Item created successfully."}, 201
 
 
 @blp.route("/restaurant/<int:restaurant_id>/item/<int:item_id>")

@@ -7,8 +7,7 @@ from flask_smorest import Blueprint, abort
 from passlib.hash import pbkdf2_sha256
 
 from blocklist import BLOCKLIST
-from models import User
-from models.user_type import UserType
+from models import User, UserType
 from resources.utils import get_table_key
 from schemas import UserSchema, OwnerSchema, TableOtpSchema
 
