@@ -4,7 +4,7 @@ from models.user_type import UserType
 
 
 class PlainItemSchema(Schema):
-    id = fields.Int(dump_only=True)
+    item_id = fields.Int(dump_only=True)
     name = fields.Str()
     price = fields.Int()
     description = fields.Str()
@@ -23,6 +23,10 @@ class PlainRestaurantSchema(Schema):
 class RestaurantSchema(PlainRestaurantSchema):
     items = fields.List(fields.Nested(PlainItemSchema()))
     menu_layout = fields.Dict()
+
+
+class RestaurantUpdateSchema(Schema):
+    metadata = fields.Dict()
 
 
 class OrderItemSchema(Schema):

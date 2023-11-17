@@ -6,11 +6,10 @@ from flask_jwt_extended import JWTManager
 from flask_smorest import Api
 from mongoengine import connect
 
-from resources.restaurant import blp as RestaurantBlueprint
-from resources.user import blp as UserBlueprint
-from resources.table import blp as TableBlueprint
-
 from blocklist import BLOCKLIST
+from resources.restaurant import blp as RestaurantBlueprint
+from resources.table import blp as TableBlueprint
+from resources.user import blp as UserBlueprint
 
 
 def create_app(db_url=None):
@@ -23,9 +22,9 @@ def create_app(db_url=None):
     app.config["OPENAPI_SWAGGER_UI_PATH"] = "/swagger-ui"
     app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
     app.config["PROPAGATE_EXCEPTIONS"] = True
-    app.config['MONGODB_SETTINGS'] = {'db': 'restaurants', 'host': 'mongodb://mongo_local:27017/restaurants', }
 
-    connect(host=app.config['MONGODB_SETTINGS']['host'])
+    connect(host='mongodb://127.0.0.1:27017/restaurants')  # to run app via app.py
+    # connect(host='mongodb://mongo_local/restaurants')    # to run app via docker method
 
     api = Api(app)
     logging.basicConfig(level=logging.DEBUG)

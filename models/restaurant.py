@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from mongoengine import Document, StringField, SequenceField, EmbeddedDocumentField, ListField, DictField, DateTimeField
 
 from models.item import Item
@@ -13,8 +15,8 @@ class Restaurant(Document):
     # layout map of these categories as keys with values being menu_layout type dictionaries, or None for last layer
     # these categories would be referenced in the items.tags list
     menu_layout = DictField()
-    created_at = DateTimeField()
-    updated_at = DateTimeField()
+    created_at = DateTimeField(default=datetime.utcnow())
+    updated_at = DateTimeField(default=datetime.utcnow())
 
     def __repr__(self):
         return f'<Restaurant(id={self.id}, name={self.name})>'
