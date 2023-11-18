@@ -30,6 +30,7 @@ class RestaurantUpdateSchema(Schema):
 
 
 class OrderItemSchema(Schema):
+    order_item_id = fields.Str(attribute='_id', dump_only=True)
     item_id = fields.Int(required=True)
     batch_id = fields.Int(dump_only=True)
     name = fields.Str(dump_only=True)
@@ -40,12 +41,14 @@ class OrderItemSchema(Schema):
 
 
 class PlainOrderSchema(Schema):
-    restaurant_id = fields.Int(required=True)
     table_id = fields.Int()
     order_id = fields.Int(dump_only=True)
+    created_at = fields.DateTime(dump_only=True)
+    updated_at = fields.DateTime(dump_only=True)
 
 
 class OrderSchema(PlainOrderSchema):
+    restaurant_id = fields.Int()
     items = fields.List(fields.Nested(OrderItemSchema()))
 
 
