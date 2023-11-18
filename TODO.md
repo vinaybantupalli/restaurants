@@ -8,10 +8,10 @@
 - ~~Implement Users (model and schema and resources)~~
 - ~~Get and Delete user access control~~
 - ~~Restaurant API access control~~
-
+- ~~Items Implementation~~
+- ~~Club UserType in jwt claim and remove the db call to get user in each API call~~
 ---
 ### Next up
-- Items Implementation
 - Orders Implementation
 - Populate schemas.py more elaborately
     - Fix the schema jumble created for users API
@@ -28,4 +28,3 @@
   - Might be useful for splitting bill among themselves
 - Handle env variables properly (for local and prod versions)
 - Read about gunicorn and use it properly in docker
-- Club UserType in jwt claim and remove the db call to get user in each API call

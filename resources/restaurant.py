@@ -6,7 +6,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_smorest import Blueprint
 from flask_smorest import abort
 
-from models import Restaurant, User, Item
+from models import Restaurant, Item
+from resources.utils import is_admin, is_admin_or_curr_owner_by_id
 from schemas import PlainItemSchema, RestaurantSchema, PlainRestaurantSchema, RestaurantUpdateSchema
 
 blp = Blueprint("Restaurants", "restaurants", description="Operations on restaurants")
@@ -18,9 +19,8 @@ class RestaurantUtils(MethodView):
     @jwt_required()
     @blp.response(200, RestaurantSchema(many=True))
     def get(self):
-        curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if not curr_user.is_admin():
+        if not is_admin(get_jwt_identity()):
             abort(403, message="Current user doesn't have access to get restaurants.")
 
         return Restaurant.objects()
@@ -29,9 +29,8 @@ class RestaurantUtils(MethodView):
     @blp.arguments(PlainRestaurantSchema)
     @blp.response(201, RestaurantSchema)
     def post(self, restaurant_data):
-        curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if not curr_user.is_admin():
+        if not is_admin(get_jwt_identity()):
             abort(403, message="Current user doesn't have access to create restaurants.")
 
         restaurant = Restaurant(**restaurant_data)
@@ -45,9 +44,8 @@ class RestaurantOps(MethodView):
     @jwt_required()
     @blp.response(200, RestaurantSchema)
     def get(self, restaurant_id):
-        curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if not curr_user.is_admin_or_curr_owner_by_id(restaurant_id):
+        if not is_admin_or_curr_owner_by_id(get_jwt_identity(), restaurant_id):
             abort(403, message="Current user doesn't have access to do get on this restaurant.")
 
         restaurant = Restaurant.objects(id=restaurant_id).first()
@@ -57,9 +55,8 @@ class RestaurantOps(MethodView):
     @blp.response(200)
     @jwt_required(fresh=True)
     def delete(self, restaurant_id):
-        curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if not curr_user.is_admin():
+        if not is_admin(get_jwt_identity()):
             abort(403, message="Current user doesn't have access to delete restaurants.")
 
         restaurant = Restaurant.objects(id=restaurant_id).first()
@@ -70,9 +67,8 @@ class RestaurantOps(MethodView):
     @blp.response(200, RestaurantSchema)
     @jwt_required(fresh=True)
     def put(self, updated_data, restaurant_id):
-        curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if not curr_user.is_admin():
+        if not is_admin(get_jwt_identity()):
             abort(403, message="Current user doesn't have access to update this restaurant.")
 
         restaurant = Restaurant.objects(id=restaurant_id).first()
@@ -87,9 +83,8 @@ class ItemUtils(MethodView):
     @jwt_required()
     @blp.response(200, PlainItemSchema(many=True))
     def get(self, restaurant_id):
-        curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if not curr_user.is_admin_or_curr_owner_by_id(restaurant_id):
+        if not is_admin_or_curr_owner_by_id(get_jwt_identity(), restaurant_id):
             abort(403, message="Current user doesn't have access to do get on this restaurant.")
 
         restaurant = Restaurant.objects(id=restaurant_id).first()
@@ -99,9 +94,8 @@ class ItemUtils(MethodView):
     @blp.arguments(PlainItemSchema)
     @blp.response(201, PlainItemSchema)
     def post(self, item_data, restaurant_id):
-        curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if not curr_user.is_admin():
+        if not is_admin(get_jwt_identity()):
             abort(403, message="Current user doesn't have access to create items on this restaurant.")
 
         restaurant = Restaurant.objects(id=restaurant_id).first()
@@ -117,9 +111,8 @@ class ItemOps(MethodView):
     @jwt_required()
     @blp.response(200, PlainItemSchema)
     def get(self, restaurant_id, item_id):
-        curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if not curr_user.is_admin_or_curr_owner_by_id(restaurant_id):
+        if not is_admin_or_curr_owner_by_id(get_jwt_identity(), restaurant_id):
             abort(403, message="Current user doesn't have access to do get on this restaurant.")
 
         restaurant = Restaurant.objects(id=restaurant_id).first()
@@ -133,9 +126,8 @@ class ItemOps(MethodView):
     @blp.response(200)
     @jwt_required(fresh=True)
     def delete(self, restaurant_id, item_id):
-        curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if not curr_user.is_admin():
+        if not is_admin(get_jwt_identity()):
             abort(403, message="Current user doesn't have access to delete items on restaurant.")
 
         restaurant = Restaurant.objects(id=restaurant_id).first()
@@ -152,9 +144,8 @@ class ItemOps(MethodView):
     @blp.response(200, PlainItemSchema)
     @jwt_required(fresh=True)
     def put(self, updated_data, restaurant_id, item_id):
-        curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if not curr_user.is_admin():
+        if not is_admin(get_jwt_identity()):
             abort(403, message="Current user doesn't have access to update items on this restaurant.")
 
         restaurant = Restaurant.objects(id=restaurant_id).first()

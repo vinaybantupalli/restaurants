@@ -1,5 +1,4 @@
-from flask_mongoengine import Document
-from mongoengine import IntField, ListField, SequenceField, EmbeddedDocumentField, BooleanField
+from mongoengine import Document, IntField, ListField, SequenceField, EmbeddedDocumentField, BooleanField
 
 from models.order_item import OrderItem
 

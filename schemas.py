@@ -69,3 +69,11 @@ class TableSchema(PlainTableSchema):
 
 class TableOtpSchema(Schema):
     otp = fields.Int(required=True)
+
+
+class PlainTokenSchema(Schema):
+    access_token = fields.Str()
+
+
+class TokenSchema(PlainTokenSchema):
+    refresh_token = fields.Str()
