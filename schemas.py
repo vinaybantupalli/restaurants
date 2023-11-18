@@ -41,7 +41,7 @@ class OrderItemSchema(Schema):
 
 class PlainOrderSchema(Schema):
     restaurant_id = fields.Int(required=True)
-    table_id = fields.List(fields.Int())
+    table_id = fields.Int()
     order_id = fields.Int(dump_only=True)
 
 

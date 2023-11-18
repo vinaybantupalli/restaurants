@@ -27,6 +27,7 @@ class RestaurantUtils(MethodView):
 
     @jwt_required(fresh=True)
     @blp.arguments(PlainRestaurantSchema)
+    @blp.response(201, RestaurantSchema)
     def post(self, restaurant_data):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
@@ -36,7 +37,7 @@ class RestaurantUtils(MethodView):
         restaurant = Restaurant(**restaurant_data)
         restaurant.updated_at = datetime.utcnow()
         restaurant.save()
-        return {"message": "Restaurant created successfully."}, 201
+        return restaurant
 
 
 @blp.route("/restaurant/<int:restaurant_id>")
@@ -46,7 +47,7 @@ class RestaurantOps(MethodView):
     def get(self, restaurant_id):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if not curr_user.is_admin_or_curr_owner(restaurant_id):
+        if not curr_user.is_admin_or_curr_owner_by_id(restaurant_id):
             abort(403, message="Current user doesn't have access to do get on this restaurant.")
 
         restaurant = Restaurant.objects(id=restaurant_id).first()
@@ -54,7 +55,7 @@ class RestaurantOps(MethodView):
         return restaurant
 
     @blp.response(200)
-    @jwt_required()
+    @jwt_required(fresh=True)
     def delete(self, restaurant_id):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
@@ -67,7 +68,7 @@ class RestaurantOps(MethodView):
 
     @blp.arguments(RestaurantUpdateSchema)
     @blp.response(200, RestaurantSchema)
-    @jwt_required()
+    @jwt_required(fresh=True)
     def put(self, updated_data, restaurant_id):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
@@ -88,7 +89,7 @@ class ItemUtils(MethodView):
     def get(self, restaurant_id):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if not curr_user.is_admin_or_curr_owner(restaurant_id):
+        if not curr_user.is_admin_or_curr_owner_by_id(restaurant_id):
             abort(403, message="Current user doesn't have access to do get on this restaurant.")
 
         restaurant = Restaurant.objects(id=restaurant_id).first()
@@ -96,6 +97,7 @@ class ItemUtils(MethodView):
 
     @jwt_required(fresh=True)
     @blp.arguments(PlainItemSchema)
+    @blp.response(201, PlainItemSchema)
     def post(self, item_data, restaurant_id):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
@@ -107,7 +109,7 @@ class ItemUtils(MethodView):
         restaurant.items.append(item)
         restaurant.updated_at = datetime.utcnow()
         restaurant.save()
-        return {"message": "Item created successfully."}, 201
+        return PlainItemSchema().dump(item), 201
 
 
 @blp.route("/restaurant/<int:restaurant_id>/item/<int:item_id>")
@@ -117,7 +119,7 @@ class ItemOps(MethodView):
     def get(self, restaurant_id, item_id):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if not curr_user.is_admin_or_curr_owner(restaurant_id):
+        if not curr_user.is_admin_or_curr_owner_by_id(restaurant_id):
             abort(403, message="Current user doesn't have access to do get on this restaurant.")
 
         restaurant = Restaurant.objects(id=restaurant_id).first()
@@ -129,7 +131,7 @@ class ItemOps(MethodView):
         return PlainItemSchema().dump(item), 200
 
     @blp.response(200)
-    @jwt_required()
+    @jwt_required(fresh=True)
     def delete(self, restaurant_id, item_id):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
@@ -148,7 +150,7 @@ class ItemOps(MethodView):
 
     @blp.arguments(PlainItemSchema)
     @blp.response(200, PlainItemSchema)
-    @jwt_required()
+    @jwt_required(fresh=True)
     def put(self, updated_data, restaurant_id, item_id):
         curr_user = User.objects(username=get_jwt_identity()).first()
 

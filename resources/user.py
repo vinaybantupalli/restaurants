@@ -64,7 +64,7 @@ class OwnerUtils(MethodView):
     def get(self, username):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if not curr_user.is_admin_or_curr_user(username=username):
+        if not curr_user.is_admin_or_curr_owner_by_name(username=username):
             abort(403, message="Current user doesn't have access to view owner.")
 
         user = User.objects(username=username).first()
@@ -104,7 +104,7 @@ class TableOtpUtils(MethodView):
     def get(self, restaurant_id, table_id):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
-        if not curr_user.is_admin_or_curr_owner(restaurant_id):
+        if not curr_user.is_admin_or_curr_owner_by_id(restaurant_id):
             abort(403, message="Current user doesn't have access to view otp.")
 
         table = User.objects(restaurant_id=restaurant_id, table_id=table_id).first()

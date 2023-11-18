@@ -21,7 +21,7 @@ class TableUtils(MethodView):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
         # user either needs to be admin or owner of the restaurant
-        if not curr_user.is_admin_or_curr_owner(restaurant_id):
+        if not curr_user.is_admin_or_curr_owner_by_id(restaurant_id):
             abort(403, message="Current user doesn't have access to view tables on this restaurant.")
 
         return User.objects(restaurant_id=restaurant_id)
@@ -32,7 +32,7 @@ class TableUtils(MethodView):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
         # user either needs to be admin or owner of the restaurant
-        if not curr_user.is_admin_or_curr_owner(restaurant_id):
+        if not curr_user.is_admin_or_curr_owner_by_id(restaurant_id):
             abort(403, message="Current user doesn't have access to either create tables at all or on this restaurant.")
 
         table_id = table_data["table_id"]
@@ -56,7 +56,7 @@ class TableOps(MethodView):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
         # user either needs to be admin or owner of the restaurant
-        if not curr_user.is_admin_or_curr_owner(restaurant_id):
+        if not curr_user.is_admin_or_curr_owner_by_id(restaurant_id):
             abort(403, message="Current user doesn't have access to view this table.")
 
         username = get_table_key(restaurant_id, table_id)
@@ -68,7 +68,7 @@ class TableOps(MethodView):
         curr_user = User.objects(username=get_jwt_identity()).first()
 
         # user either needs to be admin or owner of the restaurant
-        if not curr_user.is_admin_or_curr_owner(restaurant_id):
+        if not curr_user.is_admin_or_curr_owner_by_id(restaurant_id):
             abort(403, message="Current user doesn't have access to delete this table.")
 
         username = get_table_key(restaurant_id, table_id)
