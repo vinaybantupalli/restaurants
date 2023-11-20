@@ -10,6 +10,8 @@
 - ~~Restaurant API access control~~
 - ~~Items Implementation~~
 - ~~Club UserType in jwt claim and remove the db call to get user in each API call~~
+- ~~Verify whether multiple people are able to log in simultaneously from same table~~
+- ~~Make jwt session longer (default is 15 minutes)~~
 ---
 ### Next up
 - Orders Implementation
@@ -19,9 +21,7 @@
 - Mongo indexing
 - Documentation of access control flow 
 - Verbose in code for swagger doc - some of the responses aren’t coming up
-- Verify whether multiple people are able to log in simultaneously from same table
 - Implement closing table session (when bill is generated)
-- Make jwt session longer (default is 15 mins)
 - How to handle adding items images (s3 and store image links?)
 - How to handle early bird offers and discounts? 
 - Extra handling for identifying who in the table ordered what

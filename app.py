@@ -20,6 +20,7 @@ def create_app(db_url=None):
     app.config["OPENAPI_SWAGGER_UI_PATH"] = "/swagger-ui"
     app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
     app.config["PROPAGATE_EXCEPTIONS"] = True
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 3600
 
     connect(host='mongodb://127.0.0.1:27017/restaurants')  # to run app via app.py
     # connect(host='mongodb://mongo_local/restaurants')    # to run app via docker method

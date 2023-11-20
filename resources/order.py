@@ -112,7 +112,7 @@ class OrderItemsUtils(MethodView):
     @jwt_required()
     @blp.response(200, OrderItemSchema(many=True))
     def get(self, order_id):
-        order = Order.objects(id=order_id).first()
+        order = Order.objects(order_id=order_id).first()
 
         if not is_admin_or_curr_owner_or_table(get_jwt_identity(), order.restaurant_id, order.table_id):
             abort(403, message="Current user doesn't have access to view this order item.")
