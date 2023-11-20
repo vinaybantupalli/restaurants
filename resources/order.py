@@ -80,7 +80,7 @@ class OrderItemsUtils(MethodView):
     @blp.arguments(OrderItemSchema(many=True))
     @blp.response(200, OrderSchema)
     def post(self, order_item_data, order_id):
-        order = Order.objects(id=order_id).first()
+        order = Order.objects(order_id=order_id).first()
 
         if not is_admin_or_curr_owner_or_table(get_jwt_identity(), order.restaurant_id, order.table_id):
             abort(403, message="Current user doesn't have access to update this order.")
@@ -102,7 +102,7 @@ class OrderItemsUtils(MethodView):
                 abort(404, message="Item not found in the restaurant.")
 
             order_item = OrderItem(item_id=item_id, batch_id=highest_batch_id + 1, name=item.name, price=item.price,
-                                   quantity=item_data['quantity'], instructions=item_data['instructions'],
+                                   quantity=item_data['quantity'], instructions=item_data.get('instructions', ''),
                                    timestamp=curr_timestamp)
 
             order.items.append(order_item)
@@ -125,7 +125,7 @@ class OrderItemsOps(MethodView):
     @jwt_required()
     @blp.response(200, OrderItemSchema)
     def get(self, order_id, order_item_id):
-        order = Order.objects(id=order_id).first()
+        order = Order.objects(order_id=order_id).first()
 
         if not is_admin_or_curr_owner_or_table(get_jwt_identity(), order.restaurant_id, order.table_id):
             abort(403, message="Current user doesn't have access to view this order item.")

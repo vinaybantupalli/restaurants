@@ -7,7 +7,7 @@ from flask_smorest import Api
 from mongoengine import connect
 
 from blocklist import BLOCKLIST
-from resources import order_blueprint, restaurant_blueprint, table_blueprint, user_blueprint
+from resources import item_blueprint, order_blueprint, restaurant_blueprint, table_blueprint, user_blueprint
 
 
 def create_app(db_url=None):
@@ -57,6 +57,7 @@ def create_app(db_url=None):
     def revoked_token_callback(jwt_header, jwt_payload):
         return jsonify({"description": "The token has been revoked.", "error": "token_revoked"}), 401,
 
+    api.register_blueprint(item_blueprint)
     api.register_blueprint(order_blueprint)
     api.register_blueprint(restaurant_blueprint)
     api.register_blueprint(table_blueprint)

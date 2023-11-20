@@ -90,6 +90,9 @@ class TableOtpUtils(MethodView):
     def post(self, restaurant_id, table_id):
         table = User.objects(username=get_table_key(restaurant_id, table_id)).first()
 
+        if not table:
+            abort(400, message="Table doesn't exist.")
+
         if 99999 < int(table.password) < 1000000:
             abort(400, message="Session for table already exists.")
 

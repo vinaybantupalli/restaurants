@@ -23,7 +23,7 @@ class TableUtils(MethodView):
         if not is_admin_or_curr_owner_by_id(get_jwt_identity(), restaurant_id):
             abort(403, message="Current user doesn't have access to view tables on this restaurant.")
 
-        return User.objects(restaurant_id=restaurant_id)
+        return User.objects(restaurant_id=restaurant_id, user_type=UserType.TABLE)
 
     @jwt_required(fresh=True)
     @blp.arguments(PlainTableSchema)

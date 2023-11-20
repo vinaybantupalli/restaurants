@@ -35,8 +35,8 @@ class OrderItemSchema(Schema):
     batch_id = fields.Int(dump_only=True)
     name = fields.Str(dump_only=True)
     price = fields.Int(dump_only=True)
-    quantity = fields.Int()
-    instructions = fields.Str()
+    quantity = fields.Int(required=True)
+    instructions = fields.Str(required=False)
     timestamp = fields.DateTime(dump_only=True)
 
 
