@@ -8,7 +8,7 @@ from flask_smorest import abort
 
 from models import Order, OrderItem, Restaurant
 from resources.utils import is_admin_or_curr_owner_or_table, is_admin_or_curr_owner_by_id
-from schemas import PlainOrderSchema, OrderSchema, OrderItemSchema, OrderQueryArgs
+from schemas import PlainOrderSchema, OrderSchema, OrderItemSchema, OrderQueryArgs, PlainOrderItemSchema
 
 blp = Blueprint("Orders", "orders", description="Operations on orders")
 logger = logging.getLogger(__name__)
@@ -58,7 +58,7 @@ class RestaurantOps(MethodView):
     @blp.response(200)
     @jwt_required()
     def delete(self, order_id):
-        order = Order.objects(id=order_id).first()
+        order = Order.objects(order_id=order_id).first()
 
         if not is_admin_or_curr_owner_by_id(get_jwt_identity(), order.restaurant_id):
             abort(403, message="Current user doesn't have access to delete orders.")
@@ -111,6 +111,34 @@ class OrderItemsUtils(MethodView):
             abort(403, message="Current user doesn't have access to view this order item.")
 
         return order.items
+
+    @jwt_required()
+    @blp.arguments(PlainOrderItemSchema(many=True))
+    @blp.response(200, OrderSchema)
+    def delete(self, order_item_data, order_id):
+        order = Order.objects(order_id=order_id).first()
+
+        if not is_admin_or_curr_owner_by_id(get_jwt_identity(), order.restaurant_id):
+            abort(403, message="Current user doesn't have access to update this order.")
+
+        for item_data in order_item_data:
+            # retrieve the corresponding item from the restaurant document
+            order_item_id = item_data['order_item_id']
+
+            order_item = next((item for item in order.items if item.order_item_id == order_item_id), None)
+            if order_item is None:
+                continue
+
+            if 'quantity' in item_data:
+                quantity = item_data.get('quantity')
+                if quantity > order_item.quantity:
+                    abort(400, message="Quantity invalid for current order item id")
+                order_item.quantity = order_item.quantity - quantity
+            else:
+                order_item.quantity = 0
+
+        order.save()
+        return order, 200
 
 
 @blp.route("/order/<int:order_id>/order_item/<int:order_item_id>")

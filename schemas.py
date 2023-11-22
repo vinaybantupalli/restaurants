@@ -40,8 +40,13 @@ class RestaurantUpdateSchema(Schema):
     metadata = fields.Dict()
 
 
+class PlainOrderItemSchema(Schema):
+    order_item_id = fields.Int(required=True)
+    quantity = fields.Int(required=False)
+
+
 class OrderItemSchema(Schema):
-    order_item_id = fields.Str(attribute='_id', dump_only=True)
+    order_item_id = fields.Int(dump_only=True)
     item_id = fields.Int(required=True)
     batch_id = fields.Int(dump_only=True)
     name = fields.Str(dump_only=True)
