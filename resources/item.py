@@ -8,7 +8,7 @@ from flask_smorest import abort
 
 from models import Restaurant, Item
 from resources.utils import is_admin_or_curr_owner_by_id
-from schemas import PlainItemSchema
+from schemas import PlainItemSchema, ItemQueryArgs
 
 blp = Blueprint("Items", "items", description="Operations on items")
 logger = logging.getLogger(__name__)
@@ -17,13 +17,18 @@ logger = logging.getLogger(__name__)
 @blp.route("/restaurant/<int:restaurant_id>/item")
 class ItemUtils(MethodView):
     @jwt_required()
+    @blp.arguments(ItemQueryArgs, location="query")
     @blp.response(200, PlainItemSchema(many=True))
-    def get(self, restaurant_id):
+    def get(self, search_values, restaurant_id):
 
         if not is_admin_or_curr_owner_by_id(get_jwt_identity(), restaurant_id):
             abort(403, message="Current user doesn't have access to do get on this restaurant.")
 
         restaurant = Restaurant.objects(id=restaurant_id).first()
+
+        if 'active' in search_values:
+            return [item for item in restaurant.items if item.active is search_values.get('active')]
+
         return restaurant.items
 
     @jwt_required(fresh=True)
@@ -35,6 +40,8 @@ class ItemUtils(MethodView):
             abort(403, message="Current user doesn't have access to create items on this restaurant.")
 
         restaurant = Restaurant.objects(id=restaurant_id).first()
+        if 'active' not in item_data:
+            item_data['active'] = True
         item = Item(**item_data)
         restaurant.items.append(item)
         restaurant.updated_at = datetime.utcnow()

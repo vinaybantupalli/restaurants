@@ -8,7 +8,7 @@ from flask_smorest import abort
 
 from models import Order, OrderItem, Restaurant
 from resources.utils import is_admin_or_curr_owner_or_table, is_admin_or_curr_owner_by_id
-from schemas import PlainOrderSchema, OrderSchema, OrderItemSchema, RestaurantOrderQueryArgs
+from schemas import PlainOrderSchema, OrderSchema, OrderItemSchema, OrderQueryArgs
 
 blp = Blueprint("Orders", "orders", description="Operations on orders")
 logger = logging.getLogger(__name__)
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 @blp.route("/restaurant/<int:restaurant_id>/order")
 class OrderUtils(MethodView):
     @jwt_required()
-    @blp.arguments(RestaurantOrderQueryArgs, location="query")
+    @blp.arguments(OrderQueryArgs, location="query")
     @blp.response(200, OrderSchema(many=True))
     def get(self, search_values, restaurant_id):
 

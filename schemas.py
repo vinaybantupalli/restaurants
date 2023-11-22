@@ -8,8 +8,13 @@ class PlainItemSchema(Schema):
     name = fields.Str()
     price = fields.Int()
     description = fields.Str()
+    active = fields.Boolean()
     image = fields.Str()
     tags = fields.List(fields.Str())
+
+
+class ItemQueryArgs(Schema):
+    active = fields.Boolean()
 
 
 class PlainRestaurantSchema(Schema):
@@ -49,10 +54,11 @@ class PlainOrderSchema(Schema):
 
 class OrderSchema(PlainOrderSchema):
     restaurant_id = fields.Int()
+    active = fields.Boolean()
     items = fields.List(fields.Nested(OrderItemSchema()))
 
 
-class RestaurantOrderQueryArgs(Schema):
+class OrderQueryArgs(Schema):
     active = fields.Boolean()
 
 
