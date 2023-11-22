@@ -1,4 +1,6 @@
 import logging
+import random
+from collections import defaultdict
 from datetime import datetime
 
 from flask.views import MethodView
@@ -6,9 +8,9 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_smorest import Blueprint
 from flask_smorest import abort
 
-from models import Order, OrderItem, Restaurant
-from resources.utils import is_admin_or_curr_owner_or_table, is_admin_or_curr_owner_by_id
-from schemas import PlainOrderSchema, OrderSchema, OrderItemSchema, OrderQueryArgs, PlainOrderItemSchema
+from models import Order, OrderItem, Restaurant, User
+from resources.utils import is_admin_or_curr_owner_or_table, is_admin_or_curr_owner_by_id, get_table_key
+from schemas import PlainOrderSchema, OrderSchema, OrderItemSchema, OrderQueryArgs, PlainOrderItemSchema, BillSchema
 
 blp = Blueprint("Orders", "orders", description="Operations on orders")
 logger = logging.getLogger(__name__)
@@ -67,6 +69,75 @@ class RestaurantOps(MethodView):
         return {"message": "Order Deleted Successfully"}, 200
 
 
+def get_bill_from_order(order):
+    # Create a dictionary to hold the combined quantities of items
+    combined_items = defaultdict(lambda: {"quantity": 0, "price": 0, "name": ""})
+    # Iterate over all items in the order
+    for item in order.items:
+        # Combine quantities if item_id for different order_item_id are matching
+        combined_items[item.item_id]["quantity"] += item.quantity
+        combined_items[item.item_id]["price"] = item.price
+        combined_items[item.item_id]["name"] = item.name
+    # Generate a list of BillItem
+    bill_items = [{"name": v["name"], "price": v["price"], "quantity": v["quantity"]} for v in combined_items.values()]
+    # Construct a BillSchema as response of the API
+    bill = {"table_id": order.table_id, "order_id": order.order_id, "items": bill_items}
+    return bill
+
+
+@blp.route("/order/<int:order_id>/lock")
+class LockBillOps(MethodView):
+    @jwt_required()
+    @blp.response(200, BillSchema)
+    def post(self, order_id):
+        order = Order.objects(order_id=order_id).first()
+
+        if not is_admin_or_curr_owner_or_table(get_jwt_identity(), order.restaurant_id, order.table_id):
+            abort(403, message="Current user doesn't have access to lock this order.")
+
+        order.update(active=False)
+
+        table = User.objects(username=get_table_key(order.restaurant_id, order.table_id)).first()
+        table.update(password="1")
+
+        bill = get_bill_from_order(order)
+
+        return bill, 200
+
+
+@blp.route("/order/<int:order_id>/unlock")
+class UnlockBillOps(MethodView):
+    @jwt_required()
+    @blp.response(200)
+    def post(self, order_id):
+        order = Order.objects(order_id=order_id).first()
+
+        if not is_admin_or_curr_owner_by_id(get_jwt_identity(), order.restaurant_id):
+            abort(403, message="Current user doesn't have access to unlock orders.")
+
+        order.update(active=True)
+
+        table = User.objects(username=get_table_key(order.restaurant_id, order.table_id)).first()
+        table.update(set__password=str(random.randint(100000, 999999)))
+
+        return {"message": "Order Unlocked Successfully"}, 200
+
+
+@blp.route("/order/<int:order_id>/bill")
+class BillOps(MethodView):
+    @jwt_required()
+    @blp.response(200, BillSchema)
+    def get(self, order_id):
+        order = Order.objects(order_id=order_id).first()
+
+        if not is_admin_or_curr_owner_or_table(get_jwt_identity(), order.restaurant_id, order.table_id):
+            abort(403, message="Current user doesn't have access to view bill on this table")
+
+        bill = get_bill_from_order(order)
+
+        return bill, 200
+
+
 @blp.route("/order/<int:order_id>/order_item")
 class OrderItemsUtils(MethodView):
     @jwt_required()
@@ -77,6 +148,9 @@ class OrderItemsUtils(MethodView):
 
         if not is_admin_or_curr_owner_or_table(get_jwt_identity(), order.restaurant_id, order.table_id):
             abort(403, message="Current user doesn't have access to update this order.")
+
+        if not order.active:
+            abort(400, message="Order not active. Cannot edit order now.")
 
         curr_timestamp = datetime.utcnow()
 

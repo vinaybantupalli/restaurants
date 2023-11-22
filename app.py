@@ -29,7 +29,6 @@ def create_app(db_url=None):
     logging.basicConfig(level=logging.DEBUG)
 
     app.config["JWT_SECRET_KEY"] = "vinay"
-    # TODO: use repeatable key from config
     jwt = JWTManager(app)
 
     @jwt.token_in_blocklist_loader

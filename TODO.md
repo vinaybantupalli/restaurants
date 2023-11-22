@@ -15,13 +15,15 @@
 - ~~- Orders Implementation~~
 - ~~Populate schemas.py more elaborately~~
     - ~~Fix the schema jumble created for users API~~
+- ~~Implement closing table session (when bill is locked)~~
+- ~~Implement Bill API~~
 ### Next up
-- Implement Bill API
 - Mongo make data models rich. Add cascading, etc
 - Mongo tables indexing
 - Documentation of access control flow 
 - Verbose in code for swagger doc
-- Implement closing table session (when bill is generated)
+- Use repeatable key from config for JWT secret key
+- Add symmetric key encryption for table otp
 - How to handle adding items images (s3 and store image links?)
 - Extra handling for identifying who in the table ordered what
   - Might be useful for splitting bill among themselves
@@ -37,3 +39,4 @@
 - Add unit tests for the APIs
 - Figure out and implement telemetry
 - Explore and implement github actions for build, push, deploy, etc.
+- Explore how to profile the APIs

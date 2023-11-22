@@ -69,6 +69,18 @@ class OrderSchema(PlainOrderSchema):
     items = fields.List(fields.Nested(OrderItemSchema()))
 
 
+class BillItem(Schema):
+    name = fields.Str()
+    price = fields.Int()
+    quantity = fields.Int()
+
+
+class BillSchema(Schema):
+    table_id = fields.Int()
+    order_id = fields.Int()
+    items = fields.List(fields.Nested(BillItem()))
+
+
 class OrderQueryArgs(Schema):
     active = fields.Boolean()
 
