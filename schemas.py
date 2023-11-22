@@ -25,9 +25,15 @@ class PlainRestaurantSchema(Schema):
     updated_at = fields.DateTime(dump_only=True)
 
 
+class MenuLayoutSchema(Schema):
+    sort_order = fields.List(fields.String())
+    # layout = fields.Dict(keys=fields.String(), values=fields.String())
+    layout = fields.Dict(keys=fields.String(), values=fields.Nested('self'))
+
+
 class RestaurantSchema(PlainRestaurantSchema):
     items = fields.List(fields.Nested(PlainItemSchema()))
-    menu_layout = fields.Dict()
+    menu_layout = fields.Nested(MenuLayoutSchema())
 
 
 class RestaurantUpdateSchema(Schema):
