@@ -52,6 +52,10 @@ class OrderSchema(PlainOrderSchema):
     items = fields.List(fields.Nested(OrderItemSchema()))
 
 
+class RestaurantOrderQueryArgs(Schema):
+    active = fields.Boolean()
+
+
 class UserSchema(Schema):
     username = fields.Str(required=True)
     password = fields.Str(required=True, load_only=True)

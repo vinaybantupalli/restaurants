@@ -8,7 +8,7 @@ from flask_smorest import abort
 
 from models import Order, OrderItem, Restaurant
 from resources.utils import is_admin_or_curr_owner_or_table, is_admin_or_curr_owner_by_id
-from schemas import PlainOrderSchema, OrderSchema, OrderItemSchema
+from schemas import PlainOrderSchema, OrderSchema, OrderItemSchema, RestaurantOrderQueryArgs
 
 blp = Blueprint("Orders", "orders", description="Operations on orders")
 logger = logging.getLogger(__name__)
@@ -17,11 +17,15 @@ logger = logging.getLogger(__name__)
 @blp.route("/restaurant/<int:restaurant_id>/order")
 class OrderUtils(MethodView):
     @jwt_required()
+    @blp.arguments(RestaurantOrderQueryArgs, location="query")
     @blp.response(200, OrderSchema(many=True))
-    def get(self, restaurant_id):
+    def get(self, search_values, restaurant_id):
 
         if not is_admin_or_curr_owner_by_id(get_jwt_identity(), restaurant_id):
             abort(403, message="Current user doesn't have access to get orders on this restaurant.")
+
+        if 'active' in search_values:
+            return Order.objects(active=search_values.get('active')).order_by('-updated_at')
 
         return Order.objects().order_by('-updated_at')
 
@@ -37,17 +41,6 @@ class OrderUtils(MethodView):
         order = Order(restaurant_id=restaurant_id, table_id=table_id, active=True, updated_at=datetime.utcnow())
         order.save()
         return order, 201
-
-
-@blp.route("/restaurant/<int:restaurant_id>/order/active")
-class ActiveOrderUtils(MethodView):
-    @jwt_required()
-    @blp.response(200, OrderSchema(many=True))
-    def get(self, restaurant_id):
-        if not is_admin_or_curr_owner_by_id(get_jwt_identity(), restaurant_id):
-            abort(403, message="Current user doesn't have access to get orders on this restaurant.")
-
-        return Order.objects(active=True).order_by('-updated_at')
 
 
 @blp.route("/order/<int:order_id>")
