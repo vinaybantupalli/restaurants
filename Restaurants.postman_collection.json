@@ -10,7 +10,7 @@
 			"name": "Restaurant",
 			"item": [
 				{
-					"name": "Get all restaurants",
+					"name": "Get All Restaurants",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -33,7 +33,7 @@
 					"response": []
 				},
 				{
-					"name": "Create restaurant",
+					"name": "Create Restaurant",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -45,7 +45,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\" : \"Killa's Taproom\"\n}",
+							"raw": "{\n    \"name\" : \"Killa's Taproom\",\n    \"metadata\" : {\n        \"address\" : \"Chikmagalur\",\n        \"phone\" : \"9999911111\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -65,7 +65,7 @@
 					"response": []
 				},
 				{
-					"name": "Get restaurant",
+					"name": "Get Restaurant",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -87,7 +87,7 @@
 							"variable": [
 								{
 									"key": "restaurantId",
-									"value": "1"
+									"value": "2"
 								}
 							]
 						}
@@ -95,7 +95,7 @@
 					"response": []
 				},
 				{
-					"name": "Delete restaurant",
+					"name": "Delete Restaurant",
 					"request": {
 						"method": "DELETE",
 						"header": [
@@ -123,6 +123,284 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Update Restaurant",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"metadata\" : {\n        \"address\" : \"Chikmagalur\",\n        \"phone\" : \"9999911113\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/restaurant/:restaurantId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantId"
+							],
+							"variable": [
+								{
+									"key": "restaurantId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Menu Layout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sort_order\": [\"Appetizers\", \"Main Course\", \"Desserts\"],\n    \"layout\": {\n        \"Appetizers\": {\n            \"sort_order\": [\"Starters\", \"Snacks\"],\n            \"layout\": {\n                \"Starters\": {\n                    \"sort_order\": [\"Vegetarian\", \"Non-Vegetarian\"],\n                    \"layout\": {\n                        \"Vegetarian\": {},\n                        \"Non-Vegetarian\": {}\n                    }\n                },\n                \"Snacks\": {}\n            }\n        },\n        \"Main Course\": {\n            \"sort_order\": [\"Italian\", \"Indian\"],\n            \"layout\": {\n                \"Italian\": {},\n                \"Indian\": {}\n            }\n        },\n        \"Desserts\": {}\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/restaurant/:restaurantId/menu_layout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantId",
+								"menu_layout"
+							],
+							"variable": [
+								{
+									"key": "restaurantId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Item",
+			"item": [
+				{
+					"name": "Get All Items (In a restaurant)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/restaurant/:restaurantId/item?active=True",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantId",
+								"item"
+							],
+							"query": [
+								{
+									"key": "active",
+									"value": "True"
+								}
+							],
+							"variable": [
+								{
+									"key": "restaurantId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Item",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"Green Apple Mojito\",\n    \"price\": 219,\n    \"description\": \"Green Apple Soda\",\n    \"image\": \"http://bit.ly/efghi\",\n    \"tags\": [\"Drinks\", \"Non-Alcoholic\", \"Veg\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/restaurant/:restaurantId/item",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantId",
+								"item"
+							],
+							"variable": [
+								{
+									"key": "restaurantId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Item",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/restaurant/:restaurantId/item/:itemId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantId",
+								"item",
+								":itemId"
+							],
+							"variable": [
+								{
+									"key": "restaurantId",
+									"value": "2"
+								},
+								{
+									"key": "itemId",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Item",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/restaurant/:restaurantId/item/:itemId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantId",
+								"item",
+								":itemId"
+							],
+							"variable": [
+								{
+									"key": "restaurantId",
+									"value": "2"
+								},
+								{
+									"key": "itemId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Item",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"active\" : true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/restaurant/:restaurantId/item/:itemId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantId",
+								"item",
+								":itemId"
+							],
+							"variable": [
+								{
+									"key": "restaurantId",
+									"value": "2"
+								},
+								{
+									"key": "itemId",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -130,7 +408,7 @@
 			"name": "Table",
 			"item": [
 				{
-					"name": "Get all tables",
+					"name": "Get All Tables",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -161,7 +439,7 @@
 					"response": []
 				},
 				{
-					"name": "Create table",
+					"name": "Create Table",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -201,7 +479,7 @@
 					"response": []
 				},
 				{
-					"name": "Get table",
+					"name": "Get Table",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -237,7 +515,7 @@
 					"response": []
 				},
 				{
-					"name": "Delete table",
+					"name": "Delete Table",
 					"request": {
 						"method": "DELETE",
 						"header": [
@@ -275,6 +553,304 @@
 								{
 									"key": "tableId",
 									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Get All Orders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/restaurant/:restaurantId/order?active=False",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantId",
+								"order"
+							],
+							"query": [
+								{
+									"key": "active",
+									"value": "False"
+								}
+							],
+							"variable": [
+								{
+									"key": "restaurantId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"table_id\" : 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/restaurant/:restaurantId/order",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantId",
+								"order"
+							],
+							"variable": [
+								{
+									"key": "restaurantId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/order/:orderId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"order",
+								":orderId"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Order",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"Killa's Taproom\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/order/:orderId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"order",
+								":orderId"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order Items",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/order/:orderId/order_item",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"order",
+								":orderId",
+								"order_item"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Order Items",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n  {\n    \"item_id\": 2,\n    \"quantity\": 1,\n    \"instructions\": \"double masala\"\n  }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/order/:orderId/order_item",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"order",
+								":orderId",
+								"order_item"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Order Items",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n  {\n    \"order_item_id\": 2,\n    \"quantity\": 1\n  }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/order/:orderId/order_item",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"order",
+								":orderId",
+								"order_item"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order Item",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/order/:orderId/order_item/:order_item_id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"order",
+								":orderId",
+								"order_item",
+								":order_item_id"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "1"
+								},
+								{
+									"key": "order_item_id",
+									"value": "2"
 								}
 							]
 						}
@@ -372,7 +948,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"vinay\",\n    \"password\": \"password\"\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -391,7 +967,7 @@
 							"variable": [
 								{
 									"key": "username",
-									"value": "1:1"
+									"value": "vinayT"
 								}
 							]
 						}
@@ -411,7 +987,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"vinay\",\n    \"password\": \"password\"\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -478,11 +1054,11 @@
 							"variable": [
 								{
 									"key": "restaurantId",
-									"value": "1"
+									"value": "2"
 								},
 								{
 									"key": "tableId",
-									"value": "2"
+									"value": "1"
 								}
 							]
 						}
@@ -533,7 +1109,7 @@
 					"response": []
 				},
 				{
-					"name": "Login",
+					"name": "Login (Get Token)",
 					"event": [
 						{
 							"listen": "test",
@@ -555,7 +1131,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"1:2\",\n    \"password\": \"957409\"\n}",
+							"raw": "{\n    \"username\": \"vinayT\",\n    \"password\": \"pass\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -575,7 +1151,7 @@
 					"response": []
 				},
 				{
-					"name": "Logout",
+					"name": "Logout (Revoke Token)",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -587,7 +1163,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"vinay\",\n    \"password\": \"password\"\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -633,7 +1209,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"vinay\",\n    \"password\": \"password\"\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"

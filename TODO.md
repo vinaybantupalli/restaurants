@@ -12,19 +12,19 @@
 - ~~Club UserType in jwt claim and remove the db call to get user in each API call~~
 - ~~Verify whether multiple people are able to log in simultaneously from same table~~
 - ~~Make jwt session longer (default is 15 minutes)~~
+- ~~- Orders Implementation~~
+- ~~Populate schemas.py more elaborately~~
+    - ~~Fix the schema jumble created for users API~~
 ---
 ### Next up
-- Orders Implementation
-- Populate schemas.py more elaborately
-    - Fix the schema jumble created for users API
 - Mongo make data models rich. Add cascading, etc
-- Mongo indexing
+- Mongo tables indexing
 - Documentation of access control flow 
-- Verbose in code for swagger doc - some of the responses aren’t coming up
+- Verbose in code for swagger doc
 - Implement closing table session (when bill is generated)
 - How to handle adding items images (s3 and store image links?)
-- How to handle early bird offers and discounts? 
 - Extra handling for identifying who in the table ordered what
   - Might be useful for splitting bill among themselves
 - Handle env variables properly (for local and prod versions)
 - Read about gunicorn and use it properly in docker
+- How to handle early bird offers and discounts?
