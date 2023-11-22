@@ -1,4 +1,4 @@
-## Todo
+## Tasks
 
 ### Done
 - ~~Add DB skeleton~~
@@ -15,8 +15,8 @@
 - ~~- Orders Implementation~~
 - ~~Populate schemas.py more elaborately~~
     - ~~Fix the schema jumble created for users API~~
----
 ### Next up
+- Implement Bill API
 - Mongo make data models rich. Add cascading, etc
 - Mongo tables indexing
 - Documentation of access control flow 
@@ -26,5 +26,14 @@
 - Extra handling for identifying who in the table ordered what
   - Might be useful for splitting bill among themselves
 - Handle env variables properly (for local and prod versions)
-- Read about gunicorn and use it properly in docker
 - How to handle early bird offers and discounts?
+---
+## Infra
+
+- Read about gunicorn and use it properly in docker
+- Add required k8s scripts 
+- Figure out the setup to deploy (load balancer, reverse proxy, etc.)
+- Add logging to all APIs
+- Add unit tests for the APIs
+- Figure out and implement telemetry
+- Explore and implement github actions for build, push, deploy, etc.
