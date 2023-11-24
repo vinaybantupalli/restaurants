@@ -1,5 +1,9 @@
 
-## Phase 1
+## Phase 2
+- Explore and implement frontend
+- Tick of tasks listed under Infra in Todo
+
+## ~~Phase 1~~
 
 #### Scope:
 - Only Backend REST APIs
