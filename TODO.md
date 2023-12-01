@@ -30,6 +30,8 @@
 - Handle env variables properly (for local and prod versions)
 - How to handle early bird offers and discounts?
 - Explore migrating from marshmallow to pydantic
+- Handle extras on a item (eg: chicken, prawn, etc can be extras on pasta)
+
 ---
 ## Infra
 
